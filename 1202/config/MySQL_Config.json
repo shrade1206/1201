@@ -1,0 +1,10 @@
+{
+    "UserName"     : "root",
+	"Password"     : "root",
+	"Addr"         : "127.0.0.1",
+	"Port"         : 3306,
+	"DataBase"     : "customer",
+	"MaxLifetime"  : 10,
+	"MaxOpenConns" : 10,
+	"MaxIdleConns" : 10
+}
