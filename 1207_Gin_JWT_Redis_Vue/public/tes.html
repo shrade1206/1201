@@ -1,0 +1,115 @@
+<style  scoped>
+.m-container {
+  background: url("./BG.jpeg");
+  background-size: cover;
+  height: 100%;
+  min-height: 1000px;
+  text-align: center;
+  min-width: 420px;
+}
+.h200{
+  height: 200px
+}
+.global{
+  color: white;width: 500px;margin: auto;height: 300px;border:  1px solid gray;
+}
+.wel{
+    font-size: 18px;font-weight:bold;margin: auto;width: 100px;padding: 20px 10px;
+}
+.mt10{
+    margin-top: 10px
+}
+</style>
+<template>
+<div class="m-container">
+  <div class="h200"></div>
+  <div class="global">
+    <div class="wel">歡迎登錄</div>
+    <el-form class="mt10">
+      <el-form-item>
+        <el-input :maxlength="128" placeholder="使用者名稱" style="width: 60%;" v-model="username"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-input :maxlength="128" placeholder="密碼" type="password" style="width: 60%" v-model="password"></el-input>
+      </el-form-item>
+      <el-checkbox v-model="checked">記住密碼</el-checkbox>
+      <br>
+      <br>
+      <el-button size="large" type="primary" @click="login" style="width: 60%;">登錄</el-button>
+    </el-form>
+  </div>
+
+</div>
+</template>
+<script>
+import axios from 'axios'
+export default {
+  data() {
+    return {
+      username: "",
+      password: "",
+      checked: true
+    }
+  },
+  mounted() {
+    this.getCookie();
+  },
+  methods: {
+    login() {
+      var vm = this
+      var params = new URLSearchParams();
+      params.append('username', this.username);
+      params.append('password', this.password);
+      axios.post("/api/v1/login/loginUser", params)
+        .then(function(response) {
+          if (response.data.ret == -1) {
+            console.log("ret: " + response.data.ret);
+            alert("使用者名稱或密碼錯誤！")
+          } else {
+            var remeberFlag;
+            //判斷複選框是否被勾選
+            if (vm.checked == true) {
+                // console.log("checked == true");
+                remeberFlag = "true";
+            }else {
+                remeberFlag = "false";
+            }
+            //呼叫配置cookie方法,傳入賬號名，密碼，和儲存天數3個引數
+            vm.setCookie(vm.username, vm.password, 7, remeberFlag);
+            vm.$router.push({path:'/index'});
+            console.log("username: " + response.data.data.user.username);
+          }
+        })
+        .catch(function(error) {
+          console.log("Error: " + error);
+        });
+    },
+
+    //設定cookie
+    setCookie(c_name, c_pwd, exdays, remeberFlag) {
+        var exdate = new Date(); //獲取時間
+        exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //儲存的天數
+        //字串拼接cookie
+        window.document.cookie = "userName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
+        window.document.cookie = "userPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
+        window.document.cookie = "remeberFlag" + "=" + remeberFlag + ";path=/;expires=" + exdate.toGMTString();
+    },
+
+    //讀取cookie
+    getCookie: function() {
+        if (document.cookie.length > 0) {
+            var arr = document.cookie.split('; '); //這裡顯示的格式需要切割一下自己可輸出看下
+            for (var i = 0; i < arr.length; i++) {
+                var arr2 = arr[i].split('='); //再次切割
+                //判斷查詢相對應的值
+                if (arr2[0] == 'userName') {
+                    this.username = arr2[1]; //儲存到儲存資料的地方
+                } else if (arr2[0] == 'userPwd') {
+                    this.password = arr2[1];
+                }
+            }
+        }
+    }
+  }
+}
+</script>
