@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<style>
+    button,input{
+  font-size: 23px;
+}
+</style>
+</head>
+<body>
+    <input id="username" type="text"  placeholder="請輸入使用者名稱">
+    <input id="password" type="text"  placeholder="請輸入密碼">
+    <button onclick="login()"  value=''>登入</button>
+    <button onclick="Register()"  value=''>註冊</button>
+    <button onclick="test()"  value=''>Test</button>
+    <button onclick="test1()"  value=''>Test1</button>
+    <button onclick="middleware()"  value=''>登錄測試</button>
+
+
+<script>
+    var Token 
+    function login(){
+        user = document.getElementById("username").value
+        pw = document.getElementById("password").value
+        axios.post('/login', {
+            username: user,        
+            password: pw   
+        })
+        .then(function (response) {
+            document.cookie=response.token
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+// ----------------------------------------------------
+    function test(){
+        axios.get('/ttt')
+        .then(function (res) {
+            console.log(res)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function test1(){
+        axios.get('/ttt1')
+        .then(function (res) {
+            console.log(res)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function middleware(){
+        axios.get('/auth01')
+        .then(function (res) {
+            console.log(res)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+</script>
+</body>
+</html>
