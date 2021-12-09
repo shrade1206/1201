@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>How To Create Simple Login Form Design In Bootstrap 5</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://www.markuptag.com/bootstrap/5/css/bootstrap.min.css">
+    <!-- Bootstrap JS -->
+    <script src="https://www.markuptag.com/bootstrap/5/js/bootstrap.bundle.min.js"></script>
+    <!-- Vue axios -->
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+    <div id="app" class="container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <div class="login-form bg-light mt-4 p-4">
+                    <form action="" method="" class="row g-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                          </svg>
+                          <div style="text-align:center;">
+                            <h4>{{ text }}</h4>
+                          </div>
+                        <div class="col-12">
+                            <label>Username</label>
+                            <input type="text" v-model="form.username" name="username" class="form-control" placeholder="Username">
+                        </div>
+                        <div class="col-12">
+                            <label>Password</label>
+                            <input type="password" v-model="form.password" name="password" class="form-control" placeholder="Password">
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe"> Remember me</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="button" @click="" class="btn btn-dark float-end">登錄</button>
+                        </div>
+                        <div class="col-12">
+                        <button type="button" @click="" class="btn btn-dark float-end">登出</button>
+                        <button type="button" @click="test()" class="btn btn-dark float-end">Test</button>
+                         </div>
+                    </form>
+                    <hr class="mt-4">
+                    <div class="col-12">
+                        <p class="text-center mb-0">還沒有帳號 ? <a href="#">點擊註冊</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     
+    <script>
+        Vue.createApp({
+    data() {
+        return { form: {}, text: "請先登錄帳號或註冊" };
+    },
+    methods: {
+        login() {
+        console.log(this.form);
+        axios
+            .post("/login", this.form)
+            .then((res) => {
+            console.log(res);
+            });
+        },
+        logout() {
+        console.log(this.form);
+        axios
+            .post("/logout", this.form)
+            .then((res) => {
+            console.log(res);
+            });
+        },
+        register() {
+        console.log(this.form);
+        axios
+            .post("/Register", this.form)
+            .then((res) => {
+            console.log(res.Msg);
+            window.alert(res.Msg)
+            });
+        },
+        test() {
+        axios
+            .get("/test")
+            .then((res) => {
+            console.log(res.data.Username);
+            });
+        }
+    }
+    }).mount("#app");
+    </script>
+ </body>
+</html>

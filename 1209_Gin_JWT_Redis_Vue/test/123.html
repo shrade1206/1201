@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <link rel="shortcut icon" href="favicon.ico" />
+  <!-- <script src="/index.js"></script> -->
+</head>
+<body>
+  <div id="app">
+  <div class="wrapper fadeInDown">
+    <div id="formContent">
+      <!-- Tabs Titles -->
+  
+      <!-- Icon -->
+      <div class="fadeIn first">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+        </svg>
+        {{ text }}
+      </div>
+  
+      <!-- Login Form -->
+      <form>
+        <input type="text" v-model="form.username" id="login" class="fadeIn second" name="login" placeholder="UserName"> <br><br>
+        <input type="text" v-model="form.password" id="password" class="fadeIn third" name="login" placeholder="PassWord"> <br><br>
+        <input type="submit" @click="login()" class="fadeIn fourth" value="登錄">
+        <input type="submit" @click="logout()" class="fadeIn fourth" value="登出">
+      </form>
+  
+      <!-- Remind Passowrd -->
+      <div id="formFooter">
+        <a class="underlineHover" @click="register()" href="#">註冊</a>
+      </div>
+  
+    </div>
+  </div>
+</div>
+  <script >
+    var abc = "全域變數"
+
+    Vue.createApp({
+    data() {
+        return { form: {}, text: "請先登錄帳號或註冊" };
+    },
+    methods: {
+        login() {
+        console.log(this.form);
+        axios
+            .post("/login", this.form)
+            .then((res) => {
+            console.log(res);
+            });
+        },
+        logout() {
+        console.log(this.form);
+        axios
+            .post("/logout", this.form)
+            .then((res) => {
+            console.log(res);
+            });
+        },
+        register() {
+        console.log(this.form);
+        axios
+            .post("/Register", this.form)
+            .then((res) => {
+            console.log(res.Msg);
+            windowalert(res.Msg)
+            });
+        }
+    }
+    }).mount("#app");
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://www.markuptag.com/bootstrap/5/css/bootstrap.min.css">
+  <!-- Bootstrap JS -->
+  <script src="https://www.markuptag.com/bootstrap/5/js/bootstrap.bundle.min.js"></script>
+    <style>
+.btn-yellow{
+background: #FFDF65;
+}
+.coraltext{
+  color: #FF785E;
+}
+    </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="https://hexschool.github.io/boootstrap5WebLayout/assets/logo.jpg" width="111" height="40" alt="">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">關於</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">挖寶</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">我有個大膽的想法</a>
+          </li>
+        </ul>
+        <div class="d-flex">
+          <button type="button" class="btn btn-yellow rounded-pill" data-bs-toggle="modal" data-bs-target="#exampleModal">登入</button>
+          <button type="button" class="btn btn-outline-secondary rounded-pill ms-2">註冊</button>
+        </div>
+        
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">登入</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">帳號</label>
+              <input type="email" class="form-control bg-light" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">密碼</label>
+              <input type="email" class="form-control bg-light" id="exampleInputEmail1" aria-describedby="emailHelp">
+              <a href="#" class="text-decoration-none text-secondary">忘記密碼？</a>
+            </div>
+            <div class="d-grid">
+              <button type="button" class="btn btn-yellow rounded-pill">登入</button>
+            </div>
+            <div class="position-relative mt-5 mb-3">
+                        <div class="progress" style="height: 1px;">
+                          <div class="progress-bar" role="progressbar"  aria-valuenow="0" aria-valuemin="25" aria-valuemax="100"></div>
+                        </div>
+                          <div class="forgetpassword noto position-absolute top-0 start-50 translate-middle bg-white text-center">還沒有帳號?
+                          <a href="#" class="coraltext text-decoration-none">註冊一個帳號</a></div>
+                    </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+        
+      </div>
+    </div>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        {{ text }}
+        <br>
+        帳號 <input v-model="form.userAccount" type="text"><br>
+        密碼 <input v-model="form.password" type="text">
+        <hr>
+        <button @click="login()">登入</button>
+      </div>
+
+    <script >
+        var abc = "全域變數"
+
+        Vue.createApp({
+        data() {
+            return { form: {}, text: "登錄頁面" };
+        },
+        methods: {
+            login() {
+            console.log(this.form);
+            axios
+                .post("https://hopsell-api.herokuapp.com/user/login", this.form)
+                .then((res) => {
+                console.log(res);
+                });
+            }
+        }
+        }).mount("#app");
+
+
+    </script>
+</body>
+</html>
