@@ -1,0 +1,10 @@
+{
+    "UserName"     : "root",
+	"Password"     : "root",
+	"Addr"         : "mysql",
+	"Port"         : 3306,
+	"DataBase"     : "userdata",
+	"MaxLifetime"  : 10,
+	"MaxOpenConns" : 10,
+	"MaxIdleConns" : 3600
+}
