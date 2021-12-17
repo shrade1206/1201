@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="/index.js"></script>
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body>
+  <div class="header">
+  <h2>To do List</h2>
+  <input class="todoV" id="todoV" type="text" placeholder="請輸入待辦事項">
+  <input type=button onclick="insert()" style='font-size:23px' value='Todo' />
+
+  <div style="position: relative;top: 20%;">
+    <ul id="myData"></ul>
+  </div>
+</div>
+<div class="pagination" style="position: absolute;left: 50%;margin: 0 0 0 -75px">
+  <a href="/index.html">1</a>
+  <a href="/Page2.html">2</a>
+  <a href="/Page3.html">3</a>
+</div>
+
+<script>
+  //checked
+var list = document.querySelector('ul');
+list.addEventListener('click', function(e) {
+  if (e.target.tagName === 'LI') {
+    e.target.classList.toggle('checked');
+  }
+}, false);
+  const uri = `/getpage?page=3`;
+  const initDetails = {
+      method: 'GET',
+      headers: {
+          "Content-Type": "application/json; charset=utf-8"
+      },
+      mode: "cors"
+  }
+      fetch( uri, initDetails )
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+          appendData(data);
+         })
+          .catch( err =>
+          {
+              console.log( 'Fetch Error :-S', err );
+          } );
+  function appendData(data) {
+  var mainContainer = document.getElementById("myData");
+  for (var i = 0; i < data.length; i++) {
+    var li = document.createElement("li");
+    li.innerHTML = `<button class="finish" id="${data[i].id}" onclick="finish(this)" value="${data[i].status}">完成</button>
+    ${data[i].title}
+    <button id="change" onclick="change(this)" value="${data[i].id}">修改</button>
+    <button id="del" onclick="del(this)" value="${data[i].id}">刪除</button>`;
+    mainContainer.appendChild(li);
+  }
+}
+// ------------------------------------
+
+</script>
+ 
+</body>
+</html>
