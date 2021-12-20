@@ -15,9 +15,10 @@ import (
 )
 
 type Todo struct {
-	Id     int    `json:"id"`
-	Title  string `json:"title"`
-	Status bool   `json:"status"`
+	Id        int    `json:"id"`
+	Title     string `json:"title"`
+	Completed bool   `json:"completed"`
+	// Status bool   `json:"status"`
 }
 
 type Dsn struct {

@@ -1,50 +1,29 @@
 package main
 
 import (
-	"fmt"
-	"log"
-
-	"net/http"
-	"strings"
-	"todoList/controller"
+	"os"
 	"todoList/db"
+	"todoList/router"
 
-	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	// log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	// MySQL
 	err := db.InitMysql()
 	if err != nil {
-
+		log.Fatal().Caller().Err(err).Msg("MySQL Error")
 		return
 	}
 	defer db.SQLDB.Close()
-	r := gin.Default()
-	//---------------------------------------
-	r.POST("/insert", controller.Insert)
-	//----------------------------
-	r.GET("/get", controller.Get)
-	//---------------------------------------
-	r.GET("/getpage", controller.GetPage)
-	//---------------------------------------
-	r.PUT("/put/:id", controller.Put)
-	//---------------------------------------
-	r.DELETE("/del/:id", controller.Del)
-	//---------------------------------------
-	r.NoRoute(gin.WrapH(http.FileServer(http.Dir("./public"))), func(c *gin.Context) {
-		path := c.Request.URL.Path
-		method := c.Request.Method
-		fmt.Println(path)
-		fmt.Println(method)
-		//檢查path的開頭使是否為"/"
-		if strings.HasPrefix(path, "/") {
-			fmt.Println("ok")
-		}
-	})
-	err = r.Run(":8080")
+	// Router
+	err = router.Router()
 	if err != nil {
-		log.Fatal("8080 err : ", err.Error())
+		log.Fatal().Caller().Err(err).Msg("Router Error")
+
+		return
 	}
+
 }
