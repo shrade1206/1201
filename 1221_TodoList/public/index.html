@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TodoList</title>
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"> -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://www.markuptag.com/bootstrap/5/css/bootstrap.min.css">
+    <style>
+        .completed {
+            text-decoration: line-through
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="container my-3">
+        <div>
+            <h1>Todo List</h1>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">待辦事項</span>
+            <input class="form-control" type="text" id="newTodo" placeholder="準備要做的任務" v-model="newTodo"
+                @keyup.enter="insert">
+            <button class="btn btn-primary" type="button" id="addTodo" @click="insert">新增</button>
+        </div>
+        <div class="card text-center">
+            <ul class="list-group list-group-flush text-left" id="todoList" v-for="item in filterList" :key="item.id">
+                <li class="list-group-item">
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <!-- <input v-if="cacheList.id === item.id" v-model="cacheList.text" class="form-control"
+                                    type="text" /> -->
+                            <div>
+                                <input :id="item.id" type="checkbox" class="form-check-input"
+                                    @click="item.completed = !item.completed" :checked="item.completed">
+                                <label :for="item.id" @click="finish(item)"
+                                    :class="item.completed ? 'completed' : '' ">{{item.title}}</label>
+                            </div>
+                        </div>
+                        <div class="btn-group ms-auto">
+                            <!-- <button v-if="cacheList.id === item.id" type="button" class="btn btn-success me-3"
+                                    @click="doneEdit">完成</button> -->
+                            <button type="button" class="btn btn-primary me-3" @click="change(item.id)">修改</button>
+                            <button type="button" class="btn btn-danger ms-auto remove"
+                                @click="del(item.id)">刪除</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="card-footer d-flex justify-content-between">
+                <span>有 <span class="h4" id="taskCount">{{todoList.length}}</span> 筆待辦事項</span>
+                <span>有 <span class="h4" id="taskCount">{{completedLength}}</span> 筆已完成</span>
+                <div>
+                    <a href="#" class="btn btn-outline-primary me-3" @click="visibility = 'all' ">全部</a>
+                    <a href="#" class="btn btn-outline-secondary me-3" @click="visibility = 'undone' ">未完成</a>
+                    <a href="#" class="btn btn-outline-success me-3" @click="visibility = 'completed' ">已完成</a>
+                    <!-- <a href="#" class="btn btn-outline-danger" @click='removeAllList'>清除所有待辦事項</a> -->
+                </div>
+            </div>
+            <div style="text-align: center;" v-for="item in pageNumber">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <!-- <a class="page-link" href="#" aria-label="Previous" @click=""> -->
+                            <!-- <span aria-hidden="true" >&laquo;</span> -->
+                            <!-- </a> -->
+                        </li>
+                        <div class="d-flex">
+                            <li class="page-item"><a class="page-link" href="#" @click="loadPage(item)">{{ item }}</a>
+                            </li>
+                        </div>
+                        <!-- <a class="page-link" href="#" aria-label="Next" @click=""> -->
+                        <!-- <span aria-hidden="true">&raquo;</span> -->
+                        <!-- </a> -->
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS -->
+    <script script src="https://www.markuptag.com/bootstrap/5/js/bootstrap.bundle.min.js"></script>
+    <!-- Vue axios -->
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    newTodo: '',
+                    visibility: 'all',
+                    todoList: [],
+                    pageNumber: [],
+                    currentPage: 1
+                    // cacheList: [],
+                }
+            },
+            methods: {
+                // 新增
+                insert() {
+                    if (this.newTodo == "" | this.newTodo == " ") {
+                        window.alert("請輸入代辦事項")
+                    } else {
+                        axios({
+                            method: 'post',
+                            url: `/insert`,
+                            data: {
+                                title: this.newTodo
+                            }
+                        })
+                            .then((res) => {
+                                console.log(res);
+                                this.loadPage(this.currentPage)
+                                this.newTodo = ''
+                            })
+                    }
+                },
+                // 更改資料
+                change(id) {
+                    let chV = prompt('請輸入修改值')
+                    console.log(typeof id)
+                    axios({
+                        method: 'put',
+                        url: `/put/${id}`,
+                        data: {
+                            id: id,
+                            title: chV
+                        }
+                    })
+                        .then((res) => {
+                            this.loadPage(this.currentPage)
+                            this.newTodo = ''
+                        })
+                },
+                // 刪除資料
+                del(id) {
+                    axios({
+                        method: 'DELETE',
+                        url: `/del/${id}`,
+                        data: {
+                            id: id,
+                        }
+                    })
+                        .then((res) => {
+                            this.loadPage(this.currentPage)
+                            this.newTodo = ''
+                        })
+                },
+                finish(item) {
+                    if (item.completed === true) {
+                        console.log(item.completed)
+                        item.completed = false
+                        axios({
+                            method: 'put',
+                            url: `/put/${item.id}`,
+                            data: {
+                                id: item.id,
+                                completed: item.completed
+                            }
+                        })
+                            .then((res) => {
+                                this.loadPage(this.currentPage)
+                                this.newTodo = ''
+                            })
+                    } else {
+                        item.completed = true
+                        axios({
+                            method: 'put',
+                            url: `/put/${item.id}`,
+                            data: {
+                                id: item.id,
+                                completed: item.completed
+                            }
+                        })
+                            .then((res) => {
+                                this.loadPage(this.currentPage)
+                                this.newTodo = ''
+                            })
+                    }
+                },
+                // 取得全部資料
+                tododata() {
+                    axios.get("/getpage?page=1")
+                        .then((res) => {
+                            console.log(res);
+                            this.todoList = res.data.Data
+                        })
+                        .catch(function (error) {
+                            console.log(error)
+                        })
+                },
+                page() {
+                    axios.get("/getpage?page=1")
+                        .then((res) => {
+                            this.todoList = res.data.Data
+                            let page = res.data.Page.totlepage
+                            for (let i = 1; i <= page; i++) {
+                                this.pageNumber.push(i)
+                            }
+                        })
+                },
+                loadPage(item) {
+                    axios.get(`/getpage?page=${item}`)
+                        .then((res) => {
+                            this.currentPage = item
+                            this.todoList = res.data.Data
+                            let page = res.data.Data.totlepage
+                            for (let i = 1; i <= page; i++) {
+                                this.pageNumber = []
+                                this.pageNumber.push(i)
+                            }
+                        })
+                }
+            },
+            computed: {
+                // 過濾列表
+                filterList() {
+                    switch (this.visibility) {
+                        case 'all': return this.todoList;
+                        case 'undone': return this.todoList.filter((item) => !item.completed);
+                        case 'completed': return this.todoList.filter((item) => item.completed);
+                    };
+                },
+                // 已完成數量
+                completedLength() {
+                    return this.todoList.filter((item) => item.completed).length;
+                },
+            },
+            mounted() {
+                // 網頁重整就刷新資料
+                // this.tododata()
+                this.page()
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
