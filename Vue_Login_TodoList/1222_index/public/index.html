@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Document</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://www.markuptag.com/bootstrap/5/css/bootstrap.min.css">
+    <!-- Bootstrap JS -->
+    <script src="https://www.markuptag.com/bootstrap/5/js/bootstrap.bundle.min.js"></script>
+    <!-- Vue axios -->
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+    <div id="app" class="container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <div class="login-form bg-light mt-4 p-4">
+                    <form action="" method="" class="row g-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                            class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                            <path fill-rule="evenodd"
+                                d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
+                        </svg>
+
+                        <div style="text-align:center;">
+                            <h4>{{ text }}</h4>
+                        </div>
+                        <div v-if="acc">
+                            <div class="col-12">
+                                <label>Username</label>
+                                <input type="text" v-model="form.username" name="username" class="form-control"
+                                    placeholder="Username">
+                            </div>
+                            <div class="col-12">
+                                <label>Password</label>
+                                <input type="password" v-model="form.password" name="password" class="form-control"
+                                    placeholder="Password">
+                            </div>
+                        </div>
+                        <div style="text-align:center;" v-if="img">
+                            <img style="width: 200px;" src="/succes.png" alt="">
+                        </div>
+                        <div v-if="acc" class="col-12">
+                            <button type="button" @click="login()" class="btn btn-dark float-end">登入</button>
+                        </div>
+                    </form>
+                    <hr class="mt-4">
+                    <div v-if="acc" class="col-12">
+                        <button type="button" @click="register" class="btn btn-dark float-end">輸入完資料即可點擊註冊</button>
+                        <p style="font-size: 20px;" class="text-center mb-0">還沒有帳號 ? <a href="#"></a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let Name
+        Vue.createApp({
+            data() {
+                return {
+                    form: {},
+                    text: "請先登錄帳號或註冊",
+                    acc: true,
+                    img: false
+                };
+            },
+            methods: {
+                login() {
+                    let username = this.form.username
+                    let password = this.form.password
+                    if (typeof username != "undefined" && typeof password != "undefined") {
+                        if (username !== " " && password != " ") {
+                            axios
+                                .post("http://localhost:8083/login", this.form)
+                                .then((res) => {
+                                    if (res.data.Code == 1) {
+                                        document.cookie = `token=${res.data.Data}`
+                                        Name = res.data.Msg
+                                        this.text = "歡迎登錄, " + Name
+                                        window.location.href = "/todoList.html"
+                                        this.form.password
+                                        window.alert(res.data.Msg + " 登錄成功")
+                                    } else {
+                                        this.form = {}
+                                        window.alert(res.data.Msg)
+
+                                    }
+                                })
+                        } else {
+                            window.alert("請輸入正確格式")
+                        }
+                    } else {
+                        window.alert("請輸入正確格式")
+                    }
+                },
+                register() {
+                    let username = this.form.username
+                    let password = this.form.password
+                    if (typeof username != "undefined" && typeof password != "undefined") {
+                        if (username !== " " && password != " ") {
+                            axios
+                                .post("http://localhost:8083/Register", this.form)
+                                .then((res) => {
+                                    if (res.data.Code == 1) {
+                                        window.alert(res.data.Msg)
+                                        window.location.reload()
+                                    } else {
+                                        window.alert(res.data.Msg)
+                                        window.location.reload()
+                                    }
+                                })
+                        } else {
+                            window.alert("請輸入正確格式")
+                        }
+                    } else {
+                        window.alert("請輸入正確格式")
+                    }
+                },
+                middleware() {
+                    axios
+                        .get("http://localhost:8083/middlewareAuth")
+                        .then((res) => {
+                            if (res.data.Code === 2) {
+                                console.log("請登錄帳號")
+                            } else {
+                                window.location.href = "/todoList.html"
+                            }
+                        })
+                }
+
+            },
+            mounted() {
+                axios.defaults.withCredentials = true
+                this.middleware()
+            }
+        }).mount("#app");
+    </script>
+</body>
+
+</html>
