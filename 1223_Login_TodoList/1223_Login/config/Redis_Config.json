@@ -1,0 +1,8 @@
+{
+    "Addr"          : "localhost:6379",
+    "Password"      : "",
+    "DB"            : 0,
+    "PoolSize"      : 10,
+    "PoolTimeout"   : 3600,
+    "MaxConnAge"    : 3600
+}

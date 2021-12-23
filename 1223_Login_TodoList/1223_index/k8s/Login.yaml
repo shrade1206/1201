@@ -1,0 +1,19 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: loginapi
+# spec:
+#   selector:
+#     matchLabels:
+#       app: loginapi
+#   template:
+#     metadata:
+#       labels:
+#         app: loginapi
+#     spec:
+#       containers:
+#       - name: loginapi
+#         image: <Image>
+#         resources: 
+#         ports:
+#         - containerPort: 8080

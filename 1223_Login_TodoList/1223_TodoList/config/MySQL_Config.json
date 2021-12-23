@@ -1,0 +1,10 @@
+{
+    "UserName"     : "root",
+	"Password"     : "root",
+	"Addr"         : "localhost",
+	"Port"         : 3306,
+	"DataBase"     : "todolist",
+	"MaxLifetime"  : 3600,
+	"MaxOpenConns" : 10,
+	"MaxIdleConns" : 10
+}
