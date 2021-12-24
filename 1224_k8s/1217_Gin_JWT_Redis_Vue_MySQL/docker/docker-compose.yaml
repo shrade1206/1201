@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:6.0
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    volumes:
+      - redisdata:/data
+  mysql:
+    image: mysql:8
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: userdata
+    volumes:
+      - mysqldata:/var/lib/mysql
+    restart: unless-stopped
+  phpmyadmin:
+    image: phpmyadmin:5.1.1
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      # PMA_ARBITRARY: 1
+    ports:
+      - 8081:80
+    restart: unless-stopped
+  index:
+    image: shrade1206/index:latest
+    depends_on:
+      - redis
+      - mysql
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+  todoApi:
+    image: shrade1206/todoapi:latest
+    depends_on:
+      - redis
+      - mysql
+    ports:
+      - 8082:8082
+    restart: unless-stopped
+  loginapi:
+    image: shrade1206/loginapi:latest
+    depends_on:
+      - redis
+      - mysql
+    ports:
+      - 8083:8083
+    restart: unless-stopped
+
+volumes: 
+  redisdata:
+  mysqldata:

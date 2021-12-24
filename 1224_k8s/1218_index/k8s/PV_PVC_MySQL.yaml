@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mypv
+  labels:
+    type: local  # 使用local，是因為資料夾式儲存在本地
+spec:
+  storageClassName: mysqltodo
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  # persistentVolumeReclaimPolicy: Recycle 不留資料，直接刪除
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/Users/larry_wang/1218_index/DB_MySQL"
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysqlpvc
+spec:
+  storageClassName: mysqltodo
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteMany
