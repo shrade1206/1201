@@ -1,0 +1,19 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: todolist
+# spec:
+#   selector:
+#     matchLabels:
+#       app: todolist
+#   template:
+#     metadata:
+#       labels:
+#         app: todolist
+#     spec:
+#       containers:
+#       - name: todolist
+#         image: <Image>
+#         resources:
+#         ports:
+#         - containerPort: 8080
