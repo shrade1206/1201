@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv1
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes: 
+  - ReadWriteOnce
+  # persistentVolumeReclaimPolicy: Recycle 不留資料，直接刪除
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "redis-cluster"
+  hostPath:
+    path: "/Users/larry_wang/1218_index/DB_Redis"
+    type: DirectoryOrCreate

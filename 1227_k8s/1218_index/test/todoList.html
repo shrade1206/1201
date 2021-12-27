@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TodoList</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://www.markuptag.com/bootstrap/5/css/bootstrap.min.css">
+    <style>
+        .status {
+            text-decoration: line-through
+        }
+
+        label {
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="container my-3">
+        <div>
+            <button type="button" @click="logout()" class="btn btn-dark float-end">{{ username }}登出</button>
+            <h1>Todo List</h1>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">待辦事項</span>
+            <input class="form-control" type="text" id="newTodo" placeholder="準備要做的任務" v-model="newTodo"
+                @keyup.enter="insert">
+            <button class="btn btn-primary" type="button" id="addTodo" @click="insert">新增</button>
+        </div>
+        <div class="card text-center">
+            <ul class="list-group list-group-flush text-left" id="todoList" v-for="item in filterList" :key="item.id">
+                <li class="list-group-item">
+                    <div class="d-flex">
+                        <div class="form-check">
+                            <label :id="item.id" @click="finish(item)"
+                                :class="item.status ? 'status' : '' ">{{item.title}}</label>
+                        </div>
+                        <div class="btn-group ms-auto">
+                            <button type="button" class="btn btn-primary me-3" @click="change(item.id)">修改</button>
+                            <button type="button" class="btn btn-danger ms-auto remove"
+                                @click="del(item.id)">刪除</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="card-footer d-flex justify-content-between">
+                <span>有 <span class="h4" id="taskCount">{{todoList.length}}</span> 筆待辦事項</span>
+                <span>有 <span class="h4" id="taskCount">{{statusLength}}</span> 筆已完成</span>
+                <div>
+                    <a href="#" class="btn btn-outline-primary me-3" @click="visibility = 'all' ">全部</a>
+                    <a href="#" class="btn btn-outline-secondary me-3" @click="visibility = 'undone' ">未完成</a>
+                    <a href="#" class="btn btn-outline-success me-3" @click="visibility = 'status' ">已完成</a>
+                </div>
+            </div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li v-for="item in pageNumber" class="page-item">
+                        <button type="button" @click="loadPage(item)" class="page-link">{{item}}</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS -->
+    <script script src="https://www.markuptag.com/bootstrap/5/js/bootstrap.bundle.min.js"></script>
+    <!-- Vue axios -->
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    newTodo: '',
+                    visibility: 'all',
+                    todoList: [],
+                    pageNumber: [],
+                    currentPage: 0,
+                    username: ''
+                }
+            },
+            methods: {
+                // 新增
+                insert() {
+                    if (this.newTodo == "" | this.newTodo == " ") {
+                        window.alert("請輸入待辦事項")
+                    } else {
+                        axios({
+                            method: 'post',
+                            url: `http://localhost:30802/insert`,
+                            data: {
+                                title: this.newTodo
+                            }
+                        })
+                            .then((res) => {
+                                if (res.data.Code != 1) {
+                                    window.alert(res.data.Msg)
+                                    this.logout()
+                                } else {
+                                    this.loadPage(this.currentPage)
+                                    this.newTodo = ''
+                                }
+                            })
+                    }
+                },
+                // 更改資料
+                change(id) {
+                    let chV = prompt('請輸入修改值')
+                    axios({
+                        method: 'put',
+                        url: `http://localhost:30802/put/${id}`,
+                        data: {
+                            id: id,
+                            title: chV
+                        }
+                    })
+                        .then((res) => {
+                            this.loadPage(this.currentPage)
+                            this.newTodo = ''
+                        })
+                },
+                // 刪除資料
+                del(id) {
+                    axios({
+                        method: 'DELETE',
+                        url: `http://localhost:30802/del/${id}`,
+                        data: {
+                            id: id,
+                        }
+                    })
+                        .then((res) => {
+                            this.loadPage(this.currentPage)
+                            this.newTodo = ''
+                        })
+                },
+                // 更改完成狀態
+                finish(item) {
+                    if (item.status === true) {
+                        item.status = false
+                        axios({
+                            method: 'put',
+                            url: `http://localhost:30802/put/${item.id}`,
+                            data: {
+                                id: item.id,
+                                status: item.status
+                            }
+                        })
+                            .then((res) => {
+                                this.loadPage(this.currentPage)
+                                this.newTodo = ''
+                            })
+                    } else {
+                        item.status = true
+                        axios({
+                            method: 'put',
+                            url: `http://localhost:30802/put/${item.id}`,
+                            data: {
+                                id: item.id,
+                                status: item.status
+                            }
+                        })
+                            .then((res) => {
+                                this.loadPage(this.currentPage)
+                                this.newTodo = ''
+                            })
+                    }
+                },
+                page() {
+                    if (this.currentPage === 0) {
+                        this.currentPage = 1
+                        axios.get(`http://localhost:30802/getpage?page=${this.currentPage}`)
+                            .then((res) => {
+                                if (res.data.Code === 2) {
+                                    window.location.href = "/"
+                                } else {
+                                    this.username = res.data.Msg
+                                    this.todoList = res.data.Data
+                                    let page = res.data.Page.totlepage
+                                    for (let i = 1; i <= page; i++) {
+                                        this.pageNumber.push(i)
+                                    }
+                                }
+                            })
+                    } else {
+                        axios.get(`http://localhost:30802/getpage?page=${this.currentPage}`)
+                            .then((res) => {
+                                if (res.data.Code === 2) {
+                                    window.location.href = "/"
+                                } else {
+                                    this.todoList = res.data.Data
+                                    let page = res.data.Page.totlepage
+                                    for (let i = 1; i <= page; i++) {
+                                        this.pageNumber.push(i)
+                                    }
+                                }
+                            })
+                    }
+                },
+                // 讀取分頁資料
+                loadPage(item) {
+                    axios.get(`http://localhost:30802/getpage?page=${item}`)
+                        .then((res) => {
+                            if (res.data.Code === 2) {
+                                window.location.href = "/"
+                            } else {
+                                this.currentPage = item
+                                this.todoList = res.data.Data
+                                let page = res.data.Page.totlepage
+                                this.pageNumber = []
+                                for (let i = 1; i <= page; i++) {
+                                    this.pageNumber.push(i)
+                                }
+                            }
+                        })
+                },
+                // 認證
+                middleware() {
+                    axios
+                        .get("http://localhost:30801/middlewareAuth")
+                        .then((res) => {
+                            if (res.data.Code === 2 | res.data != "") {
+                                window.location.href = "/"
+                            }
+                        })
+                },
+                // 登出
+                logout() {
+                    axios
+                        .get("http://localhost:30801/logout")
+                        .then((res) => {
+                            if (res.data.Code === 1) {
+                                window.alert(res.data.Msg)
+                                window.location.href = "/"
+                            } else {
+                                window.alert("目前無登錄，請重新登錄#4")
+                                window.location.href = "/"
+                            }
+                        })
+                },
+            },
+            computed: {
+                // 過濾列表
+                filterList() {
+                    switch (this.visibility) {
+                        case 'all': return this.todoList;
+                        case 'undone': return this.todoList.filter((item) => !item.status);
+                        case 'status': return this.todoList.filter((item) => item.status);
+                    };
+                },
+                // 已完成數量
+                statusLength() {
+                    return this.todoList.filter((item) => item.status).length;
+                },
+            },
+            mounted() {
+                axios.defaults.withCredentials = true
+                this.page()
+                this.middleware()
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
