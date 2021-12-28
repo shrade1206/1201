@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+type: Opaque
+data:
+  rootName: cm9vdA==
+  rootPw: cm9vdA==
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8
+          imagePullPolicy: IfNotPresent
+          resources:
+          env:
+            - name: MYSQL_DATABASE
+              value: todolist
+            - name: MYSQL_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: rootName
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: rootPw
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysqlpvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+# type 一共有四種(ClusterIP, NodePort, LoadBalancer, ExternalName)
+# 預設是 ClusterIP
+  selector:
+    app: mysql
+# 選擇帶有 "app=mysql" 的 pod
+  ports:
+    - port: 3306
+      targetPort: 3306
