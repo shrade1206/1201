@@ -1,0 +1,6 @@
+{
+    "TokenExpireDuration"    : 3600,
+    "CookieTime"             : 3600,
+    "SessionTime"            : 3600,
+    "MySecret"               : "jiyuu"
+}
